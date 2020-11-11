@@ -29,11 +29,11 @@ class StudentDAO:
             cur.close()
             return False
 
-    def delete_student(self, id):
+    def delete_student(self, student_id):
         cur = self.sql_connection.cursor()
 
         try:
-            cur.execute("DELETE FROM students WHERE studentID = ?", (id,))
+            cur.execute("DELETE FROM students WHERE studentID = ?", (student_id,))
             self.sql_connection.commit()
         except Exception as e:
             print(e)
