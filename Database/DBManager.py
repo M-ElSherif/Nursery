@@ -6,7 +6,7 @@ Profiles Table
 userid  name    age     height      weight
 """
 
-class DBAccess:
+class DBManager:
     package_dir = os.path.abspath(os.path.dirname(__file__))
     db_dir = os.path.join(package_dir, "Nursery.sqlite")
     SQLITE_DB = db_dir

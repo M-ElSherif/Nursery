@@ -1,44 +1,21 @@
 import sys
 
-from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel, QSqlTableModel
-from PyQt5.QtWidgets import QMainWindow, QApplication, QTableView, QWidget, QDataWidgetMapper
+from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
+from PyQt5.QtWidgets import QDataWidgetMapper
 from PyQt5 import QtWidgets
 
-from Student import Student
-from StudentDAO import StudentDAO
-from dbAccess import DBAccess
+from Forms.AddStudentForm import AddStudentForm
+from Forms.EditStudentForm import EditDeleteStudentForm
+from Models.Student import Student
+from DAO.StudentDAO import StudentDAO
 from gui.MainWindow import Ui_MainWindow
-from gui.FormAddStudent import Ui_FormAddStudent
-from gui.FormEditDeleteStudent import Ui_FormEditDeleteStudent
 
 db = QSqlDatabase("QSQLITE")
-db.setDatabaseName("Nursery.sqlite")
+db.setDatabaseName("./Database/Nursery.sqlite")
 try:
     db.open()
 except Exception as e:
     print(e)
-
-''' 
-ADD STUDENT FORM CLASS
-'''
-
-
-class AddStudentForm(QWidget, Ui_FormAddStudent):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-
-
-'''
-EDIT / DELETE STUDENT FORM CLASS
-'''
-
-
-class EditDeleteStudentForm(QWidget, Ui_FormEditDeleteStudent):
-    def __init__(self):
-        super().__init__()
-        self.setupUi(self)
-
 
 ''' 
 MAINWINDOW CLASS
@@ -69,6 +46,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Setting the combobox for Students tab
         # self.cmbFieldFilter.addItems(studentDAO().getTableFields())
 
+    '''[1] MainWindow method'''
+
     def assign_slots(self):
         # Assign search filters on text change in search fields
         self.lineDisplayStudentName.textChanged.connect(self.display_student_table)
@@ -91,18 +70,34 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         # Edit Student Form
         self.form_edit_student.btnEditStudentPrevious.clicked.connect(self.mapper.toPrevious)
         self.form_edit_student.btnEditStudentNext.clicked.connect(self.mapper.toNext)
-        self.form_edit_student.btnEditStudentSave.clicked.connect(self.mapper.submit)   # TODO: need to fix this use a separate QSqlTableModel instead to allow submit to work
+        self.form_edit_student.btnEditStudentSave.clicked.connect(self.update_student)
         self.form_edit_student.btnEditStudentDelete.clicked.connect(self.delete_student)
+
+    '''[2] MainWindow method'''
 
     def add_student(self):
         student_name = self.form_add_student.lineAddStudentName.text()
         student_grade = int(self.form_add_student.lineAddStudentGrade.text())
         student_age = int(self.form_add_student.lineAddStudentAge.text())
 
-        new_student = Student(student_name, student_age, student_grade)
+        student = Student(student_name, student_age, student_grade)
 
-        self.student_dao.create_student(new_student)
+        self.student_dao.create_student(student)
         self.display_student_table()
+        
+    '''[3] MainWindow method'''
+    def update_student(self):
+        student_id = int(self.form_edit_student.lineEditStudentID.text())
+        student_name = self.form_edit_student.lineEditStudentName.text()
+        student_grade = self.form_edit_student.lineEditStudentGrade.text()
+        student_age = self.form_edit_student.lineEditStudentAge.text()
+        
+        student = Student(student_name, student_age, student_grade)
+
+        self.student_dao.update_student(student, student_id)
+        self.display_student_table()
+
+    '''[3] MainWindow method'''
 
     def delete_student(self):
         student_id = int(self.form_edit_student.lineEditStudentID.text())
@@ -111,11 +106,17 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.display_student_editor()
         self.display_student_table()
 
+    '''[4] MainWindow method'''
+
     def show_form_addstudent(self, checked):
         self.form_add_student.show()
 
+    '''[5] MainWindow method'''
+
     def show_form_editstudent(self, checked):
         self.form_edit_student.show()
+
+    '''[6] MainWindow method'''
 
     def display_student_table(self, s=None):
         self.query = QSqlQuery(db=db)
@@ -134,6 +135,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.query.exec_()
         self.model.setQuery(self.query)
 
+    '''[7] MainWindow method'''
 
     def get_filters(self, s=None):
         # Get the text values from the search entries
@@ -143,10 +145,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         return (student_name, student_grade, student_age)
 
+    '''[8] MainWindow method'''
+
     def clear_filters(self, s=None):
         self.lineDisplayStudentName.clear()
         self.lineDisplayStudentAge.clear()
         self.lineDisplayStudentGrade.clear()
+
+    '''[9] MainWindow method'''
 
     def display_student_editor(self):
         self.mapper = QDataWidgetMapper()
@@ -158,7 +164,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         self.display_student_table(self.model)
         self.mapper.toFirst()
-
 
 
 app = QtWidgets.QApplication(sys.argv)
