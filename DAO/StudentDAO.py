@@ -1,15 +1,11 @@
-import sqlite3
-
-from dbAccess import DBAccess
-from Student import Student
+from Database.DBManager import DBManager
 
 
 class StudentDAO:
 
     def __init__(self):
-        self.sql_connection = DBAccess.createConnection()
+        self.sql_connection = DBManager.createConnection()
 
-    # TODO: Finish add student feature with QT Designer
     def create_student(self, student):
         cur = self.sql_connection.cursor()
 
@@ -28,6 +24,20 @@ class StudentDAO:
             self.sql_connection.rollback()
             cur.close()
             return False
+
+    def update_student(self, student, studentID):
+        cur = self.sql_connection.cursor()
+
+        try:
+            cur.execute("UPDATE students "
+                        "SET name= ?, grade = ?, age = ? "
+                        "WHERE studentID = ?", (student.name, student.grade, student.age, studentID))
+            self.sql_connection.commit()
+        except Exception as e:
+            print(e)
+            self.sql_connection.rollback()
+
+        cur.close()
 
     def delete_student(self, student_id):
         cur = self.sql_connection.cursor()
