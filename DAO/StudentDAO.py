@@ -6,7 +6,7 @@ class StudentDAO:
     def __init__(self):
         self.sql_connection = DBManager.createConnection()
 
-    def create_student(self, student):
+    def create_student(self, student) -> bool:
         cur = self.sql_connection.cursor()
 
         name = student.name
@@ -25,7 +25,7 @@ class StudentDAO:
             cur.close()
             return False
 
-    def update_student(self, student, studentID):
+    def update_student(self, student, studentID) -> bool:
         cur = self.sql_connection.cursor()
 
         try:
@@ -33,25 +33,29 @@ class StudentDAO:
                         "SET name= ?, grade = ?, age = ? "
                         "WHERE studentID = ?", (student.name, student.grade, student.age, studentID))
             self.sql_connection.commit()
+            return True
         except Exception as e:
             print(e)
             self.sql_connection.rollback()
 
         cur.close()
+        return False
 
-    def delete_student(self, student_id):
+    def delete_student(self, student_id) -> bool:
         cur = self.sql_connection.cursor()
 
         try:
             cur.execute("DELETE FROM students WHERE studentID = ?", (student_id,))
             self.sql_connection.commit()
+            return True
         except Exception as e:
             print(e)
             self.sql_connection.rollback()
 
         cur.close()
+        return False
 
-    def get_table_fields(self):
+    def get_table_fields(self) -> list:
         # TODO: make a case statement which has a query for each table in the database
         try:
             cur = self.sql_connection.cursor()

@@ -162,6 +162,13 @@
                   </property>
                  </widget>
                 </item>
+                <item>
+                 <widget class="QPushButton" name="isselected">
+                  <property name="text">
+                   <string>isselected</string>
+                  </property>
+                 </widget>
+                </item>
                </layout>
               </item>
              </layout>
