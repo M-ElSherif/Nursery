@@ -1,12 +1,13 @@
+from DAO.AbstractDAO import AbstractDAO
 from Database.DBManager import DBManager
 
 
-class StudentDAO:
+class StudentDAO(AbstractDAO):
 
     def __init__(self):
         self.sql_connection = DBManager.createConnection()
 
-    def create_student(self, student) -> bool:
+    def create(self, student) -> bool:
         cur = self.sql_connection.cursor()
 
         name = student.name
@@ -25,13 +26,27 @@ class StudentDAO:
             cur.close()
             return False
 
-    def update_student(self, student, studentID) -> bool:
+    def read(self, student_id) -> list:
+        cur = self.sql_connection.cursor()
+
+        try:
+            cur.execute("SELECT studentID,name,grade,age "
+                        "FROM students "
+                        "WHERE studentID = ?", (student_id,))
+            row = cur.fetchone()
+            cur.close()
+            return row
+        except Exception as e:
+            print(e)
+            self.sql_connection.close()
+
+    def update(self, student, student_id) -> bool:
         cur = self.sql_connection.cursor()
 
         try:
             cur.execute("UPDATE students "
                         "SET name= ?, grade = ?, age = ? "
-                        "WHERE studentID = ?", (student.name, student.grade, student.age, studentID))
+                        "WHERE studentID = ?", (student.name, student.grade, student.age, student_id))
             self.sql_connection.commit()
             return True
         except Exception as e:
@@ -41,7 +56,7 @@ class StudentDAO:
         cur.close()
         return False
 
-    def delete_student(self, student_id) -> bool:
+    def delete(self, student_id) -> bool:
         cur = self.sql_connection.cursor()
 
         try:
@@ -56,7 +71,6 @@ class StudentDAO:
         return False
 
     def get_table_fields(self) -> list:
-        # TODO: make a case statement which has a query for each table in the database
         try:
             cur = self.sql_connection.cursor()
             cur = self.sql_connection.execute('SELECT name,age,grade FROM students')
