@@ -1,7 +1,7 @@
-from Models.Student import Student
+from Entities.Student import Student
 from DAO.StudentDAO import StudentDAO
 
 student_dao = StudentDAO()
-student_dao.create_student(Student("test",1,1))
+student_dao.create(Student("test", 1, 1))
 
 

@@ -7,7 +7,7 @@ from PyQt5 import QtWidgets
 
 from Forms.AddStudentForm import AddStudentForm
 from Forms.EditStudentForm import EditDeleteStudentForm
-from Models.Student import Student
+from Entities.Student import Student
 from DAO.StudentDAO import StudentDAO
 from gui.MainWindow import Ui_MainWindow
 
@@ -92,7 +92,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         student = Student(student_name, student_age, student_grade)
 
-        self.student_dao.create_student(student)
+        self.student_dao.create(student)
         self.set_student_table()
 
     '''[3] MainWindow method'''
@@ -105,7 +105,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
         student = Student(student_name, student_age, student_grade)
 
-        self.student_dao.update_student(student, student_id)
+        self.student_dao.update(student, student_id)
         self.set_student_table()
 
     '''[3] MainWindow method'''
@@ -113,7 +113,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def delete_student(self):
         student_id = int(self.form_edit_student.lineEditStudentID.text())
 
-        self.student_dao.delete_student(student_id)
+        self.student_dao.delete(student_id)
         self.set_student_editor()
         self.set_student_table()
 
