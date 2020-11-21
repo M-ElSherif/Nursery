@@ -1,5 +1,6 @@
 import sys
 
+from PyQt5.QtCore import QModelIndex
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from PyQt5.QtWidgets import QDataWidgetMapper
 from PyQt5 import QtWidgets
@@ -38,21 +39,30 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.model = QSqlQueryModel()
         self.tblStudents.setModel(self.model)
 
-        self.display_student_table()
-        self.display_student_editor()
+        self.set_student_table()
+        self.set_student_editor()
         self.assign_slots()
 
-        # TODO: Currently disabled combobox
-        # Setting the combobox for Students tab
-        # self.cmbFieldFilter.addItems(studentDAO().getTableFields())
+        # TODO: Figure out how to get id of selected row. Below method might help
+        # QModelIndex QItemSelectionModel::currentIndex() const
+        self.selection_model = self.tblStudents.selectionModel()
+        self.isselected.clicked.connect(self.is_selected)
+
+    def is_selected(self, s= None):
+        print(self.selection_model.hasSelection())
+        print(self.selection_model.isRowSelected(0))
+        index = self.selection_model.currentIndex().row()
+        # i = index.sibling(index.row(), 0).data()
+
+        return index
 
     '''[1] MainWindow method'''
 
     def assign_slots(self):
         # Assign search filters on text change in search fields
-        self.lineDisplayStudentName.textChanged.connect(self.display_student_table)
-        self.lineDisplayStudentGrade.textChanged.connect(self.display_student_table)
-        self.lineDisplayStudentAge.textChanged.connect(self.display_student_table)
+        self.lineDisplayStudentName.textChanged.connect(self.set_student_table)
+        self.lineDisplayStudentGrade.textChanged.connect(self.set_student_table)
+        self.lineDisplayStudentAge.textChanged.connect(self.set_student_table)
 
         # Assign search filters clear button
         self.btnClearFilters.clicked.connect(self.clear_filters)
@@ -83,19 +93,20 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         student = Student(student_name, student_age, student_grade)
 
         self.student_dao.create_student(student)
-        self.display_student_table()
-        
+        self.set_student_table()
+
     '''[3] MainWindow method'''
+
     def update_student(self):
         student_id = int(self.form_edit_student.lineEditStudentID.text())
         student_name = self.form_edit_student.lineEditStudentName.text()
         student_grade = self.form_edit_student.lineEditStudentGrade.text()
         student_age = self.form_edit_student.lineEditStudentAge.text()
-        
+
         student = Student(student_name, student_age, student_grade)
 
         self.student_dao.update_student(student, student_id)
-        self.display_student_table()
+        self.set_student_table()
 
     '''[3] MainWindow method'''
 
@@ -103,8 +114,8 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         student_id = int(self.form_edit_student.lineEditStudentID.text())
 
         self.student_dao.delete_student(student_id)
-        self.display_student_editor()
-        self.display_student_table()
+        self.set_student_editor()
+        self.set_student_table()
 
     '''[4] MainWindow method'''
 
@@ -114,11 +125,14 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     '''[5] MainWindow method'''
 
     def show_form_editstudent(self, checked):
+        i = self.is_selected()
+        if i & i >= 0:
+            self.mapper.setCurrentIndex(i)
         self.form_edit_student.show()
 
     '''[6] MainWindow method'''
 
-    def display_student_table(self, s=None):
+    def set_student_table(self, s=None):
         self.query = QSqlQuery(db=db)
         self.query.prepare(
             "SELECT studentID,name,age,grade FROM students "
@@ -143,7 +157,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         student_grade = self.lineDisplayStudentGrade.text()
         student_age = self.lineDisplayStudentAge.text()
 
-        return (student_name, student_grade, student_age)
+        return student_name, student_grade, student_age
 
     '''[8] MainWindow method'''
 
@@ -154,7 +168,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
 
     '''[9] MainWindow method'''
 
-    def display_student_editor(self):
+    def set_student_editor(self, index=0):
         self.mapper = QDataWidgetMapper()
         self.mapper.setModel(self.model)
         self.mapper.addMapping(self.form_edit_student.lineEditStudentID, 0)
@@ -162,7 +176,9 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.mapper.addMapping(self.form_edit_student.lineEditStudentGrade, 2)
         self.mapper.addMapping(self.form_edit_student.lineEditStudentAge, 3)
 
-        self.display_student_table(self.model)
+        # self.set_student_table(self.model)
+        # if index > 0:
+        #     self.mapper.setCurrentIndex(index)
         self.mapper.toFirst()
 
 
