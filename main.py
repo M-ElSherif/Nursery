@@ -1,12 +1,12 @@
 import sys
 
-from PyQt5.QtCore import QModelIndex
 from PyQt5.QtSql import QSqlDatabase, QSqlQuery, QSqlQueryModel
 from PyQt5.QtWidgets import QDataWidgetMapper
 from PyQt5 import QtWidgets
 
-from Forms.AddStudentForm import AddStudentForm
-from Forms.EditStudentForm import EditDeleteStudentForm
+from Controller.StudentAddController import StudentAddController
+from Views.StudentAddView import StudentAddView
+from Views.StudentEditView import StudentEditView
 from Entities.Student import Student
 from DAO.StudentDAO import StudentDAO
 from gui.MainWindow import Ui_MainWindow
@@ -27,12 +27,13 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
-        self.form_add_student = AddStudentForm()
+        self.form_add_student = StudentAddView()
         self.form_add_student.hide()
-        self.form_edit_student = EditDeleteStudentForm()
+        self.form_edit_student = StudentEditView()
         self.form_edit_student.hide()
         self.student_dao = StudentDAO()
         self.mapper = QDataWidgetMapper()
+        self.student_add_controller = StudentAddController(self)
 
         # TODO: Should be refactored up maybe into another class
         # Setting the SqlQuery model for the tables
@@ -43,6 +44,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.set_student_editor()
         self.assign_slots()
 
+
         # TODO: Figure out how to get id of selected row. Below method might help
         # QModelIndex QItemSelectionModel::currentIndex() const
         self.selection_model = self.tblStudents.selectionModel()
@@ -52,7 +54,6 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         print(self.selection_model.hasSelection())
         print(self.selection_model.isRowSelected(0))
         index = self.selection_model.currentIndex().row()
-        # i = index.sibling(index.row(), 0).data()
 
         return index
 
@@ -68,11 +69,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btnClearFilters.clicked.connect(self.clear_filters)
 
         # Assign add student form button
-        self.btnAddStudent.clicked.connect(self.show_form_addstudent)
-
-        # Add Student Form
-        # Assign save student in add student form
-        self.form_add_student.btnSaveStudent.clicked.connect(self.add_student)
+        self.btnAddStudent.clicked.connect(self.student_add_controller.show)
 
         # Assign edit student form button
         self.btnEditStudent.clicked.connect(self.show_form_editstudent)
@@ -84,15 +81,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.form_edit_student.btnEditStudentDelete.clicked.connect(self.delete_student)
 
     '''[2] MainWindow method'''
-
-    def add_student(self):
-        student_name = self.form_add_student.lineAddStudentName.text()
-        student_grade = int(self.form_add_student.lineAddStudentGrade.text())
-        student_age = int(self.form_add_student.lineAddStudentAge.text())
-
-        student = Student(student_name, student_age, student_grade)
-
-        self.student_dao.create(student)
+    def refresh_table(self):
         self.set_student_table()
 
     '''[3] MainWindow method'''
@@ -120,7 +109,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
     '''[4] MainWindow method'''
 
     def show_form_addstudent(self, checked):
-        self.form_add_student.show()
+        self.student_add_controller.show()
 
     '''[5] MainWindow method'''
 

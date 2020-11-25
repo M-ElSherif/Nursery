@@ -1,11 +1,10 @@
 from DAO.StudentDAO import StudentDAO
-from Entities import Student
+from Entities.Student import Student
 
 
 class StudentModel:
 
-    def __init__(self, student):
-        self.student = student
+    def __init__(self):
         self.studentDAO = StudentDAO()
 
     def create_student(self, student) -> bool:
@@ -18,10 +17,10 @@ class StudentModel:
             student_name = student_row[1]
             student_grade = student_row[3]
             student_age = student_row[2]
-            return Student(student_name, student_age, student_grade)
+            return Student(student_name, student_age,student_grade)
 
     def update_student(self, student, student_id) -> bool:
-        if self.studentDAO(student, student_id):
+        if self.studentDAO.update(student, student_id):
             return True
 
     def delete_student(self, student_id) -> bool:

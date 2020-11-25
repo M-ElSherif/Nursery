@@ -6,7 +6,7 @@ EDIT / DELETE STUDENT FORM CLASS
 '''
 
 
-class EditDeleteStudentForm(QWidget, Ui_FormEditDeleteStudent):
+class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
     def __init__(self):
         super().__init__()
         self.setupUi(self)
