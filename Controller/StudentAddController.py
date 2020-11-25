@@ -5,15 +5,18 @@ from Views.StudentAddView import StudentAddView
 
 class StudentAddController:
 
-    def __init__(self, MainWindow):
-        self.form_add_student = None
-        self.model = StudentModel()
-        self.view = StudentAddView()
+    def __init__(self, main_window):
+        self.model: StudentModel = StudentModel()
+        self.view: StudentAddView = StudentAddView()
+        from main import MainWindow
+        self.main_window: MainWindow = main_window
         self.assign_buttons()
-        self.main_window = MainWindow
 
     def show(self, s=None):
         self.view.show()
+
+    def hide(self, s=None):
+        self.view.hide()
 
     def assign_buttons(self):
         # Assign add student form button

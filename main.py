@@ -29,12 +29,18 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         # TODO: Should be refactored up maybe into another class
         # Setting the SqlQuery model for the tables
-        self.model = QSqlQueryModel()
-        self.tblStudents.setModel(self.model)
-
+        self.sql_query_model: QSqlQueryModel = QSqlQueryModel()
+        self.tbl_students.setModel(self.sql_query_model)
         self.set_student_table()
-        self.set_student_editor()
+        self.student_add_controller: StudentAddController = StudentAddController(self)
+        self.student_edit_controller: StudentEditController = StudentEditController(self)
+        self.student_add_controller.show()
+        self.student_add_controller.hide()
+        self.student_edit_controller.show()
+        self.student_edit_controller.hide()
+
         self.assign_slots()
+        self.student_edit_controller.set_student_editor()
 
         # QModelIndex QItemSelectionModel::currentIndex() const
         self.selection_model = self.tbl_students.selectionModel()
@@ -54,13 +60,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.btnAddStudent.clicked.connect(self.student_add_controller.show)
 
         # Assign edit student form button
-        self.btnEditStudent.clicked.connect(self.show_form_editstudent)
-
-        # Edit Student Form
-        self.form_edit_student.btnEditStudentPrevious.clicked.connect(self.mapper.toPrevious)
-        self.form_edit_student.btnEditStudentNext.clicked.connect(self.mapper.toNext)
-        self.form_edit_student.btnEditStudentSave.clicked.connect(self.update_student)
-        self.form_edit_student.btnEditStudentDelete.clicked.connect(self.delete_student)
+        self.btnEditStudent.clicked.connect(self.student_edit_controller.show)
 
     '''[2] MainWindow method'''
 
@@ -94,7 +94,7 @@ class MainWindow(QtWidgets.QMainWindow, Ui_MainWindow):
         self.query.bindValue(":student_age", student_age)
 
         self.query.exec_()
-        self.model.setQuery(self.query)
+        self.sql_query_model.setQuery(self.query)
 
     '''[7] MainWindow method'''
 
