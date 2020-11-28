@@ -1,20 +1,26 @@
+from PyQt5 import QtCore
+from PyQt5.QtCore import QObject
 from PyQt5.QtWidgets import QMainWindow, QDataWidgetMapper
 
 from Entities.Student import Student
 from Models.StudentModel import StudentModel
+# from Views.MainWindow import MainWindow
+from Views.MainWindow import MainWindow
 from Views.StudentAddView import StudentAddView
 from Views.StudentEditView import StudentEditView
 
 
-class StudentEditController:
+class StudentEditController(QObject):
+    signalPassDataToMainForm = QtCore.pyqtSignal(bool)
 
     def __init__(self, main_window):
+        super().__init__()
         self.model: StudentModel = StudentModel()
         self.view: StudentEditView = StudentEditView()
         self.mapper: QDataWidgetMapper = QDataWidgetMapper()
-        from main import MainWindow
         self.main_window: MainWindow = main_window
         self.assign_buttons()
+        self.set_student_editor()
 
     def show(self, s=None):
         i = self.is_selected()
@@ -31,7 +37,7 @@ class StudentEditController:
     def is_selected(self, s=None) -> int:
         # print(self.selection_model.hasSelection())
         # print(self.selection_model.isRowSelected(0))
-        index = self.main_window.tbl_students.selectionModel().currentIndex().row()
+        index = self.main_window.tblStudents.selectionModel().currentIndex().row()
 
         return index
 
@@ -39,7 +45,7 @@ class StudentEditController:
         student_id = int(self.view.lineEditStudentID.text())
 
         self.model.delete_student(student_id)
-        self.main_window.refresh_table()
+        self.signalPassDataToMainForm.emit(True)
 
     def update_student(self):
         student_id = int(self.view.lineEditStudentID.text())
@@ -50,7 +56,13 @@ class StudentEditController:
         student = Student(student_name, student_age, student_grade)
 
         self.model.update_student(student, student_id)
-        self.main_window.refresh_table()
+        self.signalPassDataToMainForm.emit(True)
+
+    def clear_fields(self):
+        self.view.lineEditStudentID.clear()
+        self.view.lineEditStudentAge.clear()
+        self.view.lineEditStudentName.clear()
+        self.view.lineEditStudentGrade.clear()
 
     def set_student_editor(self, index=0):
         self.mapper = QDataWidgetMapper()

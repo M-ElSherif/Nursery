@@ -150,6 +150,12 @@
                <layout class="QVBoxLayout" name="verticalLayout_3">
                 <item>
                  <widget class="QPushButton" name="btnAddStudent">
+                  <property name="maximumSize">
+                   <size>
+                    <width>75</width>
+                    <height>23</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>Add</string>
                   </property>
@@ -157,15 +163,14 @@
                 </item>
                 <item>
                  <widget class="QPushButton" name="btnEditStudent">
+                  <property name="maximumSize">
+                   <size>
+                    <width>75</width>
+                    <height>23</height>
+                   </size>
+                  </property>
                   <property name="text">
                    <string>Edit / Delete</string>
-                  </property>
-                 </widget>
-                </item>
-                <item>
-                 <widget class="QPushButton" name="isselected">
-                  <property name="text">
-                   <string>isselected</string>
                   </property>
                  </widget>
                 </item>
@@ -174,17 +179,40 @@
              </layout>
             </item>
             <item>
-             <widget class="QPushButton" name="btnClearFilters">
-              <property name="maximumSize">
-               <size>
-                <width>100</width>
-                <height>16777215</height>
-               </size>
-              </property>
-              <property name="text">
-               <string>Clear</string>
-              </property>
-             </widget>
+             <layout class="QHBoxLayout" name="horizontalLayout_3">
+              <item>
+               <widget class="QPushButton" name="btnClearFilters">
+                <property name="maximumSize">
+                 <size>
+                  <width>100</width>
+                  <height>16777215</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Clear</string>
+                </property>
+               </widget>
+              </item>
+              <item alignment="Qt::AlignLeft">
+               <widget class="QPushButton" name="btnRefresh">
+                <property name="minimumSize">
+                 <size>
+                  <width>0</width>
+                  <height>0</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>718</width>
+                  <height>23</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string>Refresh</string>
+                </property>
+               </widget>
+              </item>
+             </layout>
             </item>
             <item>
              <widget class="QTableView" name="tblStudents">
