@@ -1,14 +1,19 @@
+from PyQt5 import QtCore
+from PyQt5.QtCore import QObject
+
 from Entities.Student import Student
 from Models.StudentModel import StudentModel
+from Views.MainWindow import MainWindow
 from Views.StudentAddView import StudentAddView
 
 
-class StudentAddController:
+class StudentAddController(QObject):
+    signalPassDataToMainForm = QtCore.pyqtSignal(bool)
 
     def __init__(self, main_window):
+        super().__init__()
         self.model: StudentModel = StudentModel()
         self.view: StudentAddView = StudentAddView()
-        from main import MainWindow
         self.main_window: MainWindow = main_window
         self.assign_buttons()
 
@@ -22,6 +27,11 @@ class StudentAddController:
         # Assign add student form button
         self.view.btnSaveStudent.clicked.connect(self.save_button_action)
 
+    def clear_fields(self):
+        self.view.lineAddStudentAge.clear()
+        self.view.lineAddStudentName.clear()
+        self.view.lineAddStudentGrade.clear()
+
     def save_button_action(self, saved):
         student_name = self.view.lineAddStudentName.text()
         student_grade = int(self.view.lineAddStudentGrade.text())
@@ -29,7 +39,7 @@ class StudentAddController:
 
         student = Student(student_name, student_age, student_grade)
 
+        # self.model.create_student(student)
         if self.model.create_student(student):
-            self.main_window.set_student_table()
-
-
+            self.signalPassDataToMainForm.emit(True)
+            self.clear_fields()
