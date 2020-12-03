@@ -1,10 +1,15 @@
+from PyQt5.QtCore import QObject, pyqtSignal
+
 from DAO.StudentDAO import StudentDAO
 from Entities.Student import Student
 
 
-class StudentModel:
+class StudentModel(QObject):
+    signal_student_saved = pyqtSignal(bool)
+    signal_student_deleted = pyqtSignal(bool)
 
     def __init__(self):
+        super().__init__()
         self.studentDAO = StudentDAO()
 
     def create_student(self, student) -> bool:
@@ -21,10 +26,12 @@ class StudentModel:
 
     def update_student(self, student, student_id) -> bool:
         if self.studentDAO.update(student, student_id):
+            # self.signal_student_saved.emit(True)
             return True
 
     def delete_student(self, student_id) -> bool:
         if self.studentDAO.delete(student_id):
+            # self.signal_student_deleted.emit(True)
             return True
 
     def get_student_table_fields(self) -> list:
