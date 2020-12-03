@@ -14,7 +14,7 @@ class StudentModel(QObject):
 
     def create_student(self, student) -> bool:
         if self.studentDAO.create(student):
-            return True
+            self.signal_student_saved.emit(True)
 
     def read_student(self, student_id) -> Student:
         student_row = self.studentDAO.read(student_id)
@@ -26,13 +26,11 @@ class StudentModel(QObject):
 
     def update_student(self, student, student_id) -> bool:
         if self.studentDAO.update(student, student_id):
-            # self.signal_student_saved.emit(True)
-            return True
+            self.signal_student_saved.emit(True)
 
     def delete_student(self, student_id) -> bool:
         if self.studentDAO.delete(student_id):
-            # self.signal_student_deleted.emit(True)
-            return True
+            self.signal_student_deleted.emit(True)
 
     def get_student_table_fields(self) -> list:
         table_fields = self.studentDAO.get_table_fields()

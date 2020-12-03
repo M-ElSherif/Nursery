@@ -6,7 +6,6 @@ from Models.StudentModel import StudentModel
 
 
 class StudentAddController(QObject):
-    signal_refresh_table = QtCore.pyqtSignal(bool)
 
     def __init__(self, student_model):
         super().__init__()
@@ -15,6 +14,5 @@ class StudentAddController(QObject):
 
     def save_student(self, student: Student) -> bool:
         if self.model.create_student(student):
-            self.signal_refresh_table.emit(True)
             return True
         return False

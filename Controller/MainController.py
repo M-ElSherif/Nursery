@@ -57,8 +57,8 @@ class MainController:
         # Assign edit student form button
         self.mainwindow_view.btnEditStudent.clicked.connect(self.student_edit_view.show_editor)
 
-        self.student_add_controller.signal_refresh_table.connect(self.refresh_table)
-        self.student_edit_controller.signal_refresh_table.connect(self.refresh_table)
+        self.student_model.signal_student_saved.connect(self.refresh_table)
+        self.student_model.signal_student_deleted.connect(self.refresh_table)
 
         # Assign refresh student table button
         self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_table)
