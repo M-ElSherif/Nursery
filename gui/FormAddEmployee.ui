@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>102</height>
+    <height>149</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -35,6 +35,26 @@
      </item>
      <item row="1" column="1">
       <widget class="QComboBox" name="cmbEmployeePosition"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="lblEmployeeJoinDate">
+       <property name="text">
+        <string>Employee Join Date</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QDateTimeEdit" name="dteEmployeeJoinDate"/>
+     </item>
+     <item row="3" column="0">
+      <widget class="QLabel" name="lblEmployeeSalary">
+       <property name="text">
+        <string>Employee Salary</string>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1">
+      <widget class="QDoubleSpinBox" name="spinEmployeeSalary"/>
      </item>
     </layout>
    </item>

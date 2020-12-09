@@ -1,23 +1,26 @@
+from turtle import pos
+
 from DAO.AbstractDAO import AbstractDAO
 from Database.DBManager import DBManager
-from Entities.Student import Student
+from Entities.Employee import Employee
 
 
-class StudentDAO(AbstractDAO):
+class EmployeeDAO(AbstractDAO):
 
     def __init__(self):
         self.sql_connection = DBManager.createConnection()
 
-    def create(self, student: Student) -> bool:
+    def create(self, employee: Employee) -> bool:
         cur = self.sql_connection.cursor()
 
-        name = student.name
-        grade = student.grade
-        age = student.age
+        name = employee.name
+        position = employee.position
+        salary = employee.salary
+        join_date = employee.join_date
 
         try:
-            cur.execute("INSERT INTO students (name, grade, age) VALUES (?,?,?)",
-                        (name, grade, age))
+            cur.execute("INSERT INTO employees (name, position, salary, joindate) VALUES (?,?,?,?)",
+                        (name, position, salary, join_date))
             self.sql_connection.commit()
             cur.close()
             return True
@@ -27,13 +30,13 @@ class StudentDAO(AbstractDAO):
             cur.close()
             return False
 
-    def read(self, student_id) -> list:
+    def read(self, employee_id: int) -> list:
         cur = self.sql_connection.cursor()
 
         try:
-            cur.execute("SELECT studentID,name,grade,age "
-                        "FROM students "
-                        "WHERE studentID = ?", (student_id,))
+            cur.execute("SELECT employeeID,name,position,salary,joindate "
+                        "FROM employees "
+                        "WHERE employeeID = ?", (employee_id,))
             row = cur.fetchone()
             cur.close()
             return row
@@ -41,13 +44,13 @@ class StudentDAO(AbstractDAO):
             print(e)
             self.sql_connection.close()
 
-    def update(self, student, student_id) -> bool:
+    def update(self, employee: Employee, employee_id: int) -> bool:
         cur = self.sql_connection.cursor()
 
         try:
-            cur.execute("UPDATE students "
-                        "SET name= ?, grade = ?, age = ? "
-                        "WHERE studentID = ?", (student.name, student.grade, student.age, student_id))
+            cur.execute("UPDATE employees "
+                        "SET name= ?, position = ?, salary =? , joindate = ? "
+                        "WHERE employeeID = ?", (employee.name, employee.position, employee.salary, employee_id))
             self.sql_connection.commit()
             return True
         except Exception as e:
@@ -57,11 +60,11 @@ class StudentDAO(AbstractDAO):
         cur.close()
         return False
 
-    def delete(self, student_id) -> bool:
+    def delete(self, employee_id: int) -> bool:
         cur = self.sql_connection.cursor()
 
         try:
-            cur.execute("DELETE FROM students WHERE studentID = ?", (student_id,))
+            cur.execute("DELETE FROM employees WHERE employeeID = ?", (employee_id,))
             self.sql_connection.commit()
             return True
         except Exception as e:
@@ -74,7 +77,7 @@ class StudentDAO(AbstractDAO):
     def get_table_fields(self) -> list:
         try:
             cur = self.sql_connection.cursor()
-            cur = self.sql_connection.execute('SELECT name,age,grade FROM students')
+            cur = self.sql_connection.execute('SELECT name, position, salary, joindate FROM employees')
             fields = [description[0] for description in cur.description]
             cur.close()
             return fields
