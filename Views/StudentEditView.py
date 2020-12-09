@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget, QDataWidgetMapper
 from Controller.StudentEditController import StudentEditController
 from Entities.Student import Student
 from Models.StudentModel import StudentModel
+from Views.DialogAlertView import DialogAlertView
 from Views.MainWindowView import MainWindowView
 from gui.FormEditDeleteStudent import Ui_FormEditDeleteStudent
 
@@ -67,6 +68,8 @@ class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
         self.student_edit_controller.update_student(student, student_id)
 
     def delete_button_action(self):
+        dialog_alert_view: DialogAlertView = DialogAlertView()
         student_id = int(self.lineEditStudentID.text())
 
+        dialog_alert_view.show_dialog(True, 4)
         self.student_edit_controller.delete_student(student_id)

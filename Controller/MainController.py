@@ -3,6 +3,7 @@ from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 from Controller.StudentAddController import StudentAddController
 from Controller.StudentEditController import StudentEditController
 from Models.StudentModel import StudentModel
+from Views.DialogConfirmationView import DialogConfirmationView
 from Views.MainWindowView import MainWindowView
 from Views.StudentAddView import StudentAddView
 from Views.StudentEditView import StudentEditView
@@ -25,6 +26,7 @@ class MainController:
         self.student_edit_controller: StudentEditController = StudentEditController(self.student_model)
         self.student_edit_view: StudentEditView = StudentEditView(self.student_model, self.student_edit_controller,
                                                                   self.mainwindow_view)
+        self.dialog_popup_view: DialogConfirmationView = DialogConfirmationView()
         self.student_add_view.show()
         self.student_add_view.hide()
         self.student_edit_view.show_editor()
@@ -58,7 +60,9 @@ class MainController:
         self.mainwindow_view.btnEditStudent.clicked.connect(self.student_edit_view.show_editor)
 
         self.student_model.signal_student_saved.connect(self.refresh_table)
+        self.student_model.signal_student_saved.connect(self.dialog_popup_view.show_dialog)
         self.student_model.signal_student_deleted.connect(self.refresh_table)
+        self.student_model.signal_student_deleted.connect(self.dialog_popup_view.show_dialog)
 
         # Assign refresh student table button
         self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_table)
