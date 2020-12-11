@@ -4,6 +4,7 @@ from DAO.AbstractDAO import AbstractDAO
 from Database.DBManager import DBManager
 from Entities.Employee import Employee
 
+#TODO: Open a DB connection and close it at the end of each method
 
 class EmployeeDAO(AbstractDAO):
 
@@ -39,7 +40,7 @@ class EmployeeDAO(AbstractDAO):
                         "WHERE employeeID = ?", (employee_id,))
             row = cur.fetchone()
             cur.close()
-            return row
+            return Employee(row[1],row[2],row[3],row[4])
         except Exception as e:
             print(e)
             self.sql_connection.close()

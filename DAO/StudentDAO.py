@@ -36,7 +36,7 @@ class StudentDAO(AbstractDAO):
                         "WHERE studentID = ?", (student_id,))
             row = cur.fetchone()
             cur.close()
-            return row
+            return Student(row[1],row[2],row[3])
         except Exception as e:
             print(e)
             self.sql_connection.close()
