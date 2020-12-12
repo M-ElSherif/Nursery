@@ -13,6 +13,9 @@ class MainWindowView(QtWidgets.QMainWindow, Ui_MainWindow):
         self.setupUi(self)
 
         # Setting the SqlQuery model for the tables
-        self.sql_query_model: QSqlQueryModel = QSqlQueryModel()
-        self.tblStudents.setModel(self.sql_query_model)
+        self.student_sql_query_model: QSqlQueryModel = QSqlQueryModel()
+        self.employee_sql_query_model: QSqlQueryModel = QSqlQueryModel()
+        self.tblStudents.setModel(self.student_sql_query_model)
+        self.tblEmployees.setModel(self.employee_sql_query_model)
+
 

@@ -46,7 +46,7 @@ class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
         self.btnEditStudentNext.clicked.connect(self.mapper.toNext)
         self.btnEditStudentSave.clicked.connect(self.update_button_action)
         self.btnEditStudentDelete.clicked.connect(self.delete_button_action)
-        self.mapper.setModel(self.main_window.sql_query_model)
+        self.mapper.setModel(self.main_window.student_sql_query_model)
         self.mapper.addMapping(self.lineEditStudentID, 0)
         self.mapper.addMapping(self.lineEditStudentName, 1)
         self.mapper.addMapping(self.lineEditStudentGrade, 2)
