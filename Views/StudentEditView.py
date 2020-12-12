@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget, QDataWidgetMapper
 
-from Controller.StudentEditController import StudentEditController
+from Controller.StudentController import StudentController
 from Entities.Student import Student
 from Models.StudentModel import StudentModel
 from Views.DialogAlertView import DialogAlertView
@@ -13,11 +13,11 @@ EDIT / DELETE STUDENT FORM CLASS
 
 
 class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
-    def __init__(self, student_model, student_edit_controller, main_window):
+    def __init__(self, student_model, student_controller, main_window):
         super().__init__()
         self.setupUi(self)
         self.student_model: StudentModel = student_model
-        self.student_edit_controller: StudentEditController = student_edit_controller
+        self.student_edit_controller: StudentController = student_controller
         self.main_window: MainWindowView = main_window
         self.mapper = QDataWidgetMapper()
         self.set_student_editor()

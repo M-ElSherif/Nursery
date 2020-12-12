@@ -1,7 +1,6 @@
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
-from Controller.StudentAddController import StudentAddController
-from Controller.StudentEditController import StudentEditController
+from Controller.StudentController import StudentController
 from Models.StudentModel import StudentModel
 from Views.DialogConfirmationView import DialogConfirmationView
 from Views.MainWindowView import MainWindowView
@@ -21,10 +20,9 @@ class MainController:
     def __init__(self):
         self.mainwindow_view: MainWindowView = MainWindowView()
         self.student_model = StudentModel()
-        self.student_add_controller: StudentAddController = StudentAddController(self.student_model)
-        self.student_add_view: StudentAddView = StudentAddView(self.student_model, self.student_add_controller)
-        self.student_edit_controller: StudentEditController = StudentEditController(self.student_model)
-        self.student_edit_view: StudentEditView = StudentEditView(self.student_model, self.student_edit_controller,
+        self.student_controller: StudentController = StudentController(self.student_model)
+        self.student_add_view: StudentAddView = StudentAddView(self.student_model, self.student_controller)
+        self.student_edit_view: StudentEditView = StudentEditView(self.student_model, self.student_controller,
                                                                   self.mainwindow_view)
         self.dialog_popup_view: DialogConfirmationView = DialogConfirmationView()
         self.student_add_view.show()
