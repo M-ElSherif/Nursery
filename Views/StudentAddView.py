@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QWidget
 
-from Controller.StudentAddController import StudentAddController
+from Controller.StudentController import StudentController
 from Entities.Student import Student
 from Models.StudentModel import StudentModel
 from gui.FormAddStudent import Ui_FormAddStudent
@@ -11,11 +11,11 @@ ADD STUDENT FORM CLASS
 
 
 class StudentAddView(QWidget, Ui_FormAddStudent):
-    def __init__(self, student_model, student_add_controller):
+    def __init__(self, student_model, student_controller):
         super().__init__()
         self.setupUi(self)
         self.model: StudentModel = student_model
-        self.student_controller: StudentAddController = student_add_controller
+        self.student_controller: StudentController = student_controller
         self.assign_buttons()
 
     def assign_buttons(self):
