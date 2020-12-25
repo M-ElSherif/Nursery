@@ -1,6 +1,8 @@
 from PyQt5.QtSql import QSqlQuery, QSqlDatabase
 
+from Controller.EmployeeController import EmployeeController
 from Controller.StudentController import StudentController
+from Models.EmployeeModel import EmployeeModel
 from Models.StudentModel import StudentModel
 from Views.DialogConfirmationView import DialogConfirmationView
 from Views.MainWindowView import MainWindowView
@@ -18,9 +20,16 @@ except Exception as e:
 class MainController:
 
     def __init__(self):
-        self.mainwindow_view: MainWindowView = MainWindowView()
-        self.student_model = StudentModel()
+        # Instantiate the models to be used for the data
+        self.student_model: StudentModel = StudentModel()
+        self.employee_model: EmployeeModel = EmployeeModel()
+
+        # Instantiate the controllers
         self.student_controller: StudentController = StudentController(self.student_model)
+        self.employee_controller: EmployeeController = EmployeeController(self.employee_model)
+
+        # Instantiate the views to be utilized throughout the application
+        self.mainwindow_view: MainWindowView = MainWindowView()
         self.student_add_view: StudentAddView = StudentAddView(self.student_model, self.student_controller)
         self.student_edit_view: StudentEditView = StudentEditView(self.student_model, self.student_controller,
                                                                   self.mainwindow_view)
@@ -30,10 +39,11 @@ class MainController:
         self.student_edit_view.show_editor()
         self.student_edit_view.hide()
 
+        # Instantiate the QSqlQuery objects to be used by the tables
         self.student_query = QSqlQuery(db=db)
-        self.employee_query = QSqlQuery(db = db)
+        self.employee_query = QSqlQuery(db=db)
 
-        # Set the students table, load the data and assign slots to the signals
+        # Prepare the students table, load the data and assign slots to the signals
         self.set_student_table()
         self.student_selection_model = self.mainwindow_view.tblStudents.selectionModel()
         self.assign_student_slots()
@@ -46,11 +56,6 @@ class MainController:
     def show(self):
         self.mainwindow_view.show()
 
-    def clear_filters(self, s=None):
-        self.mainwindow_view.lineDisplayStudentName.clear()
-        self.mainwindow_view.lineDisplayStudentAge.clear()
-        self.mainwindow_view.lineDisplayStudentGrade.clear()
-
     def assign_student_slots(self):
         # Assign search filters on text change in search fields
         self.mainwindow_view.lineDisplayStudentName.textChanged.connect(self.set_student_table)
@@ -58,7 +63,7 @@ class MainController:
         self.mainwindow_view.lineDisplayStudentAge.textChanged.connect(self.set_student_table)
 
         # Assign search filters clear button
-        self.mainwindow_view.btnClearFilters.clicked.connect(self.clear_filters)
+        self.mainwindow_view.btnClearFilters.clicked.connect(self.clear_student_filters)
 
         # Assign add student form button
         self.mainwindow_view.btnAddStudent.clicked.connect(self.student_add_view.show)
@@ -75,13 +80,16 @@ class MainController:
         self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_table)
 
     def assign_employee_slots(self):
+        # Populate the employee positions combobox
+        self.load_employee_positions_combobox()
+
         # Assign search filters on text change in search fields
         self.mainwindow_view.lineEmployeeName.textChanged.connect(self.set_employee_table)
         self.mainwindow_view.cmbEmployeePosition.currentTextChanged.connect(self.set_employee_table)
 
         # # Assign search filters clear button
-        # self.mainwindow_view.btnClearFilters.clicked.connect(self.clear_filters)
-        #
+        self.mainwindow_view.btnClearFiltersEmployee.clicked.connect(self.clear_student_filters)
+
         # # Assign add student form button
         # self.mainwindow_view.btnAddStudent.clicked.connect(self.student_add_view.show)
         #
@@ -95,6 +103,11 @@ class MainController:
         #
         # # Assign refresh student table button
         # self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_table)
+
+    def load_employee_positions_combobox(self):
+        positions = self.employee_model.get_employee_positions()
+        self.mainwindow_view.cmbEmployeePosition.addItem("")
+        self.mainwindow_view.cmbEmployeePosition.addItems(positions)
 
     def refresh_table(self, s):
         if s:
@@ -140,9 +153,19 @@ class MainController:
 
         return student_name, student_grade, student_age
 
+    def clear_student_filters(self, s=None):
+        self.mainwindow_view.lineDisplayStudentName.clear()
+        self.mainwindow_view.lineDisplayStudentAge.clear()
+        self.mainwindow_view.lineDisplayStudentGrade.clear()
+
     def get_employee_filters(self, s=None):
         # Get the text values from the search entries
         employee_name = self.mainwindow_view.lineEmployeeName.text()
         employee_position = self.mainwindow_view.cmbEmployeePosition.currentText()
 
         return employee_name, employee_position
+
+    def clear_student_filters(self, s=None):
+        self.mainwindow_view.lineEmployeeName.clear()
+        self.mainwindow_view.cmbEmployeePosition.clear()
+        self.load_employee_positions_combobox()

@@ -33,3 +33,9 @@ class EmployeeModel(QObject):
         table_fields = self.employeeDAO.get_table_fields()
         if (table_fields is not None) or len(table_fields) > 0:
             return table_fields
+
+    def get_employee_positions(self) -> list:
+        positions = self.employeeDAO.get_employee_positions()
+        print(positions)
+        if (positions is not None) or len(positions) > 0:
+            return positions

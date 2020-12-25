@@ -10,7 +10,7 @@ class StudentModel(QObject):
 
     def __init__(self):
         super().__init__()
-        self.studentDAO = StudentDAO()
+        self.studentDAO = StudentDAO
 
     def create_student(self, student: Student) -> bool:
         if self.studentDAO.create(student):
