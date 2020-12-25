@@ -86,3 +86,15 @@ class EmployeeDAO(AbstractDAO):
             print(e)
 
         cur.close()
+
+    def get_employee_positions(self) -> list:
+        try:
+            cur = self.sql_connection.cursor()
+            cur = self.sql_connection.execute('SELECT DISTINCT position FROM employees')
+            positions = [position[0] for position in cur.fetchall()]
+            cur.close()
+            return positions
+        except Exception as e:
+            print(e)
+
+        cur.close()
