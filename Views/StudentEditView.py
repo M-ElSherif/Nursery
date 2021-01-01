@@ -17,7 +17,7 @@ class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
         super().__init__()
         self.setupUi(self)
         self.student_model: StudentModel = student_model
-        self.student_edit_controller: StudentController = student_controller
+        self.student_controller: StudentController = student_controller
         self.main_window: MainWindowView = main_window
         self.mapper = QDataWidgetMapper()
         self.set_student_editor()

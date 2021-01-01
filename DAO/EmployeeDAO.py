@@ -51,7 +51,7 @@ class EmployeeDAO(AbstractDAO):
         try:
             cur.execute("UPDATE employees "
                         "SET name= ?, position = ?, salary =? , joindate = ? "
-                        "WHERE employeeID = ?", (employee.name, employee.position, employee.salary, employee_id))
+                        "WHERE employeeID = ?", (employee.name, employee.position, employee.salary, employee.join_date, employee_id))
             self.sql_connection.commit()
             return True
         except Exception as e:

@@ -6,6 +6,7 @@ from Models.EmployeeModel import EmployeeModel
 from Models.StudentModel import StudentModel
 from Views.DialogConfirmationView import DialogConfirmationView
 from Views.EmployeeAddView import EmployeeAddView
+from Views.EmployeeEditView import EmployeeEditView
 from Views.MainWindowView import MainWindowView
 from Views.StudentAddView import StudentAddView
 from Views.StudentEditView import StudentEditView
@@ -35,6 +36,8 @@ class MainController:
         self.student_edit_view: StudentEditView = StudentEditView(self.student_model, self.student_controller,
                                                                   self.mainwindow_view)
         self.employee_add_view: EmployeeAddView = EmployeeAddView(self.employee_model, self.employee_controller)
+        self.employee_edit_view: EmployeeEditView = EmployeeEditView(self.employee_model, self.employee_controller,
+                                                                     self.mainwindow_view)
         self.dialog_popup_view: DialogConfirmationView = DialogConfirmationView()
         self.student_add_view.show()
         self.student_add_view.hide()
@@ -76,17 +79,14 @@ class MainController:
         self.mainwindow_view.btnEditStudent.clicked.connect(self.student_edit_view.show_editor)
 
         # When a student is saved, deleted or updated successfully, refresh the student table
-        #TODO: missing update signal
-        self.student_model.signal_student_saved.connect(self.refresh_table)
+        # TODO: missing update signal
+        self.student_model.signal_student_saved.connect(self.refresh_student_table)
         self.student_model.signal_student_saved.connect(self.dialog_popup_view.show_dialog)
-        self.student_model.signal_student_deleted.connect(self.refresh_table)
+        self.student_model.signal_student_deleted.connect(self.refresh_student_table)
         self.student_model.signal_student_deleted.connect(self.dialog_popup_view.show_dialog)
 
         # Assign refresh student table button
-        self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_table)
-
-        # Assign add employee form button
-        self.mainwindow_view.btnAddEmployee.clicked.connect(self.employee_add_view.show)
+        self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_student_table)
 
     def assign_employee_slots(self):
         # Populate the employee positions combobox
@@ -99,28 +99,29 @@ class MainController:
         # # Assign search filters clear button
         self.mainwindow_view.btnClearFiltersEmployee.clicked.connect(self.clear_employee_filters)
 
-        # # Assign add student form button
-        # self.mainwindow_view.btnAddStudent.clicked.connect(self.student_add_view.show)
-        #
-        # # Assign edit student form button
-        # self.mainwindow_view.btnEditStudent.clicked.connect(self.student_edit_view.show_editor)
-        #
-        # self.student_model.signal_student_saved.connect(self.refresh_table)
-        # self.student_model.signal_student_saved.connect(self.dialog_popup_view.show_dialog)
-        # self.student_model.signal_student_deleted.connect(self.refresh_table)
-        # self.student_model.signal_student_deleted.connect(self.dialog_popup_view.show_dialog)
-        #
-        # # Assign refresh student table button
-        # self.mainwindow_view.btnRefresh.clicked.connect(self.refresh_table)
+        # Assign add employee form button
+        self.mainwindow_view.btnAddEmployee.clicked.connect(self.employee_add_view.show)
+
+        # Assign edit student form button
+        self.mainwindow_view.btnEditEmployee.clicked.connect(self.employee_edit_view.show_editor)
+
+        # When an employee is saved, deleted or updated successfully, refresh the employee table
+        self.employee_model.signal_employee_saved.connect(self.refresh_employee_table)
+        self.employee_model.signal_employee_deleted.connect(self.refresh_employee_table)
+
 
     def load_employee_positions_combobox(self):
         positions = self.employee_model.get_employee_positions()
         self.mainwindow_view.cmbEmployeePosition.addItem("")
         self.mainwindow_view.cmbEmployeePosition.addItems(positions)
 
-    def refresh_table(self, s):
+    def refresh_student_table(self, s):
         if s:
             self.set_student_table()
+
+    def refresh_employee_table(self, s):
+        if s:
+            self.set_employee_table()
 
     def set_student_table(self, s=None):
         self.student_query.prepare(
