@@ -1,10 +1,10 @@
 import sys
-from datetime import datetime
+from datetime import datetime, date
 
 
 class Employee:
 
-    def __init__(self, name: str, position: str, salary: float, join_date: datetime):
+    def __init__(self, name: str, position: str, salary: float, join_date: str):
         self.name = name
         self.position = position
         self.salary = salary
