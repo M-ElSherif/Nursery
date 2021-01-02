@@ -72,4 +72,4 @@ class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
         student_id = int(self.lineEditStudentID.text())
 
         dialog_alert_view.show_dialog(True, 4)
-        self.student_edit_controller.delete_student(student_id)
+        self.student_controller.delete_student(student_id)
