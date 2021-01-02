@@ -16,15 +16,6 @@ class StudentModel(QObject):
         if self.studentDAO.create(student):
             self.signal_student_saved.emit(True, 1)
 
-    # TODO: delete
-    # def read_student(self, student_id: int) -> Student:
-    #     student_row = self.studentDAO.read(student_id)
-    #     if student_row is not None:
-    #         student_name = student_row[1]
-    #         student_grade = student_row[3]
-    #         student_age = student_row[2]
-    #         return Student(student_name, student_age, student_grade)
-
     def read_student(self, student_id: int) -> Student:
         student = self.studentDAO.read(student_id)
         if student is not None:
