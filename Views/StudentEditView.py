@@ -65,7 +65,7 @@ class StudentEditView(QWidget, Ui_FormEditDeleteStudent):
 
         student: Student = Student(student_name, student_age, student_grade)
 
-        self.student_edit_controller.update_student(student, student_id)
+        self.student_controller.update_student(student, student_id)
 
     def delete_button_action(self):
         dialog_alert_view: DialogAlertView = DialogAlertView()
